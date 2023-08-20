@@ -18,7 +18,7 @@ public class CardController implements CrUDSimple<CardDto,Integer> {
 
     @Override
     @PostMapping("/create")
-    public ResponseDto<CardDto> create(@RequestBody CardDto dto) {
+    public ResponseDto<CardDto> create(@RequestBody @Valid CardDto dto) {
         return this.cardService.create(dto);
     }
 
@@ -30,7 +30,7 @@ public class CardController implements CrUDSimple<CardDto,Integer> {
 
     @Override
     @PutMapping("/update")
-    public ResponseDto<CardDto> update(@RequestBody @Valid CardDto dto, @RequestParam(value = "id") Integer id) {
+    public ResponseDto<CardDto> update(@RequestBody CardDto dto, @RequestParam(value = "id") Integer id) {
         return this.cardService.update(dto,id);
     }
 

@@ -1,5 +1,6 @@
 package com.example.card_user.service;
 
+import com.example.card_user.dto.ErrorDto;
 import com.example.card_user.dto.ImageDto;
 import com.example.card_user.dto.ResponseDto;
 import com.example.card_user.dto.UserDto;
@@ -10,6 +11,8 @@ import com.example.card_user.service.mapper.ImageMapper;
 import com.example.card_user.service.mapper.UserMapper;
 import com.example.card_user.model.CrUDSimple;
 import com.example.card_user.model.User;
+import com.example.card_user.service.validation.UserValidation;
+import com.example.card_user.test.UserTest;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,11 +33,22 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
     private final CardService cardService;
     private final ImageRepository imageRepository;
     private final ImageMapper imageMapper;
+    private final UserValidation userValidation;
 
 
     @Override
     public ResponseDto<UserDto> create(UserDto dto) {
         dto.setCreatedAt(LocalDateTime.now());
+
+        List<ErrorDto> errors = userValidation.validation(dto);
+        if (!errors.isEmpty()) {
+            return ResponseDto.<UserDto>builder()
+                    .message("Validation Error")
+                    .code(-4)
+                    .errors(errors)
+                    .build();
+        }
+
         if (this.userRepository.existsByEmailAndDeletedAtIsNull(dto.getEmail())){
             return ResponseDto.<UserDto>builder()
                     .code(-3)
@@ -78,7 +92,16 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
     public ResponseDto<UserDto> update(UserDto dto, Integer id) {
         try {
             return this.userRepository.findByIdAndDeletedAtIsNull(id).map(user1 -> {
-                if (!this.userRepository.findByEmailAndDeletedAtIsNull(dto.getEmail()).get().getId().equals(id)){
+                List<ErrorDto> errors = userValidation.validation(dto);
+                if (!errors.isEmpty()) {
+                    return ResponseDto.<UserDto>builder()
+                            .message("Validation Error")
+                            .code(-4)
+                            .errors(errors)
+                            .build();
+                }
+
+                if (dto.getEmail()!=null && !this.userRepository.findByEmailAndDeletedAtIsNull(dto.getEmail()).get().getId().equals(id)){
                     return ResponseDto.<UserDto>builder()
                             .message("This email already exists!")
                             .code(-3)
