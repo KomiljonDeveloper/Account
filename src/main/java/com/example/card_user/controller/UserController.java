@@ -6,6 +6,7 @@ import com.example.card_user.model.CrUDSimple;
 import com.example.card_user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,6 +38,9 @@ public class UserController implements CrUDSimple<UserDto,Integer> {
     public ResponseDto<UserDto> get(@PathVariable Integer id) {
         return this.userService.get(id);
     }
-
+    @GetMapping("/get-all-page")
+    public ResponseDto<Page<UserDto>> getAllByPage(@RequestParam Integer page,@RequestParam Integer size){
+    return this.userService.getAllByPage(page,size);
+    }
 
 }

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CardDto {
-    @NotBlank(message = "This column cannot be empty")
     private Integer userId;
     private Integer cardId;
     @NotBlank(message = "This column cannot be empty")
@@ -25,7 +24,8 @@ public class CardDto {
     private String cardNumber;
     @NotBlank(message = "This column cannot be empty")
     private String cardDate;
-    @NotBlank(message = "This column cannot be empty")
+    @NotBlank(message
+            = "This column cannot be empty")
     @Size(min =4,max = 4,message = "This column length equal to four")
     private String cardPassword;
     private UserDto user;

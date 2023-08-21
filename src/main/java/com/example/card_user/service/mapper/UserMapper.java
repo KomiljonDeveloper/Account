@@ -7,7 +7,6 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",imports = CardService.class)
 public abstract class UserMapper {
-    CardService cardService;
     @Mapping(target = "id",ignore = true)
      public abstract User toEntity(UserDto dto);
     @Mapping(target = "createdAt",ignore = true)

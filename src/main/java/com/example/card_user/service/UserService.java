@@ -15,6 +15,9 @@ import com.example.card_user.service.validation.UserValidation;
 import com.example.card_user.test.UserTest;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -168,4 +171,21 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
                     .build();
         }
 
-    }}
+    }
+
+    public ResponseDto<Page<UserDto>> getAllByPage(Integer page, Integer size) {
+        Page<User> userPage = this.userRepository.findAllByDeletedAtIsNull(PageRequest.of(page, size));
+        Page<UserDto> map = userPage.map(this.userMapper::toDto);
+        if (map.isEmpty()) {
+            return ResponseDto.<Page<UserDto>>builder()
+                    .code(-1)
+                    .message("Users not found!")
+                    .build();
+        }
+        return ResponseDto.<Page<UserDto>>builder()
+                .message("Ok")
+                .success(true)
+                .date(map)
+                .build();
+    }
+}
