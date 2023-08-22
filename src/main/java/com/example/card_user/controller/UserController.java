@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "user")
 @RequiredArgsConstructor
@@ -43,4 +45,16 @@ public class UserController implements CrUDSimple<UserDto,Integer> {
     return this.userService.getAllByPage(page,size);
     }
 
+    @GetMapping("/get-all-page-value")
+    public ResponseDto<Page<UserDto>> getAllByValue(@RequestParam Integer page,@RequestParam Integer size,@RequestParam String value){
+        return this.userService.getAllByValue(page,size,value);
+
+    }
+
+    @GetMapping("/get-by-email")
+    public ResponseDto<List<UserDto>> getAllByValue(@RequestParam String email){
+        return this.userService.getAllByEmail(email);
+
+
+    }
 }

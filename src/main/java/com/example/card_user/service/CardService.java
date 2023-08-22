@@ -34,7 +34,7 @@ public class CardService implements CrUDSimple<CardDto, Integer> {
     public ResponseDto<CardDto> create(CardDto dto) {
         try {
             dto.setCreatedAt(LocalDateTime.now());
-            Optional<User> is = this.userRepository.findByIdAndDeletedAtIsNull(dto.getUserId());
+            Optional<User> is = this.userRepository.findByUserId(dto.getUserId());
             List<ErrorDto> validation = cardValidation.validation(dto);
             if (is.isPresent()) {
 

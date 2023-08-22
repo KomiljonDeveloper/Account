@@ -20,7 +20,7 @@ public abstract class CardMapper {
     @Mapping(target = "createdAt",ignore = true)
     @Mapping(target = "updatedAt",ignore = true)
     @Mapping(target = "deletedAt",ignore = true)
-    @Mapping(target = "user",expression = "java(userMapper.toDto(userRepository.findByIdAndDeletedAtIsNull(card.getUserId()).get()))")
+    @Mapping(target = "user",expression = "java(userMapper.toDto(userRepository.findByUserId(card.getUserId()).get()))")
     public abstract CardDto toDto(Card card);
 
 

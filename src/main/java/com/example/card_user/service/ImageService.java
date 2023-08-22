@@ -34,7 +34,7 @@ public class ImageService implements CrUDImage<ImageDto, MultipartFile, Integer>
     public ResponseDto<ImageDto> upload(MultipartFile image, Integer userId) {
         try {
 
-            return this.userRepository.findByIdAndDeletedAtIsNull(userId).map(user -> {
+            return this.userRepository.findByUserId(userId).map(user -> {
 
                 String[] split = Objects.requireNonNull(image.getOriginalFilename()).split("\\.");
                 Image image1 = new Image();

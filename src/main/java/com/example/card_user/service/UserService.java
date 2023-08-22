@@ -12,19 +12,15 @@ import com.example.card_user.service.mapper.UserMapper;
 import com.example.card_user.model.CrUDSimple;
 import com.example.card_user.model.User;
 import com.example.card_user.service.validation.UserValidation;
-import com.example.card_user.test.UserTest;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +65,7 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
     @Override
     public ResponseDto<UserDto> delete(Integer id) {
         try {
-            return this.userRepository.findByIdAndDeletedAtIsNull(id).map(user1 -> {
+            return this.userRepository.findByUserId(id).map(user1 -> {
                 user1.setDeletedAt(LocalDateTime.now());
                 this.userRepository.save(user1);
                 return ResponseDto.<UserDto>builder()
@@ -94,7 +90,7 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
     @Override
     public ResponseDto<UserDto> update(UserDto dto, Integer id) {
         try {
-            return this.userRepository.findByIdAndDeletedAtIsNull(id).map(user1 -> {
+            return this.userRepository.findByUserId(id).map(user1 -> {
                 List<ErrorDto> errors = userValidation.validation(dto);
                 if (!errors.isEmpty()) {
                     return ResponseDto.<UserDto>builder()
@@ -134,7 +130,7 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
     @Override
     public ResponseDto<UserDto> get(Integer id) {
         try {
-            return this.userRepository.findByIdAndDeletedAtIsNull(id).map(user1 -> {
+            return this.userRepository.findByUserId(id).map(user1 -> {
                 Optional<Image> optional = this.imageRepository.findByUserIdAndDeletedAtIsNull(user1.getId());
 
                     try {
@@ -186,6 +182,39 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
                 .message("Ok")
                 .success(true)
                 .date(map)
+                .build();
+    }
+
+    public ResponseDto<Page<UserDto>> getAllByValue(Integer page, Integer size, String value) {
+        Page<UserDto> map = this.userRepository.findByPageOnOrderBy(PageRequest.of(page, size), value).map(this.userMapper::toDto);
+        if (map.isEmpty()) {
+            return ResponseDto.<Page<UserDto>>builder()
+                    .code(-1)
+                    .message("Users not found!")
+                    .build();
+        }
+        return ResponseDto.<Page<UserDto>>builder()
+                .message("OK")
+                .success(true)
+                .date(map)
+                .build();
+
+    }
+
+    public ResponseDto<List<UserDto>> getAllByEmail(String email) {
+        List<User> users = this.userRepository.findByEmail(email);
+        if (users.isEmpty()) {
+            return  ResponseDto.<List<UserDto>>builder()
+                    .message("Users not found!")
+                    .code(-1)
+                    .build();
+        }
+
+        List<UserDto> list = users.stream().map(this.userMapper::toDto).toList();
+        return ResponseDto.<List<UserDto>>builder()
+                .success(true)
+                .message("OK")
+                .date(list)
                 .build();
     }
 }
