@@ -33,10 +33,12 @@ public interface UserRepository extends JpaRepository<User,Integer>
 
 
 
-    @Query(value = "select * from users where users.id = ? and users.deleted_at is null",
+    @Query(value = "select * from users where users.id = :id and users.deleted_at is null",
             nativeQuery = true)
-    Optional<User> findByUserId(@Param(value = "?") Integer id);
-
+    Optional<User> findByUserId(Integer id);
+    @Query(
+            name = "existsByEmail"
+     )
     boolean existsByEmailAndDeletedAtIsNull(String email);
 
     Page<User> findAllByDeletedAtIsNull(Pageable pageable);
