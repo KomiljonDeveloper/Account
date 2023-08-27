@@ -12,13 +12,15 @@ import com.example.card_user.model.Card;
 import com.example.card_user.model.CrUDSimple;
 import com.example.card_user.service.validation.CardValidation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class CardService implements CrUDSimple<CardDto, Integer> {
                             .build();
                 }
 
-                if (this.cardRepository.existsByCardNumberAndDeletedAtIsNull(dto.getCardNumber())) {
+                if (this.cardRepository.existsByCardNumber(dto.getCardNumber())) {
                     return ResponseDto.<CardDto>builder()
                             .message("This cardNumber is already exists!")
                             .code(-2)
@@ -166,6 +168,36 @@ public class CardService implements CrUDSimple<CardDto, Integer> {
             cardsDto.add(this.cardMapper.toDtoNotUser(card));
         }
         return cardsDto;
+
+    }
+
+    public ResponseDto<Page<CardDto>> searchByBasic(Map<String, String> params) {
+        int page = 0,size = 10;
+        if (params.containsKey("page")){
+            page = Integer.parseInt(params.get("page"));
+        }
+        if (params.containsKey("size")){
+            size = Integer.parseInt(params.get("size"));
+        }
+        Page<CardDto> map = this.cardRepository.searchByBasic(
+                params.get("id") == null ? null : Integer.parseInt(params.get("id")),
+                params.get("number"),
+                params.get("name"),
+                PageRequest.of(page, size)
+        ).map(this.cardMapper::toDto);
+        if (map.isEmpty()){
+            return ResponseDto.<Page<CardDto>>builder()
+                    .message("Cards are not found!")
+                    .code(-1)
+                    .build();
+        }else {
+            return ResponseDto.<Page<CardDto>>builder()
+                    .success(true)
+                    .message("Ok")
+                    .date(map)
+                    .build();
+        }
+
 
     }
 }

@@ -11,6 +11,9 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedQuery(name = "existsByCardNumber",
+        query = "select case when count (c)>0 " +
+                "then true else false end from Card as c where c.cardNumber = :cardNumber and c.deletedAt is null")
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

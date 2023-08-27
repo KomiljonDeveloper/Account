@@ -43,4 +43,21 @@ public interface UserRepository extends JpaRepository<User,Integer>
 
     Page<User> findAllByDeletedAtIsNull(Pageable pageable);
     Optional<User> findByEmailAndDeletedAtIsNull(String email);
+
+    @Query(
+           value = "select  * from users where" +
+                   " id = coalesce(:id,id) and" +
+                   " first_name ilike coalesce(concat('%',:f,'%'),first_name) and" +
+                   " last_name ilike coalesce(concat('%',:l,'%'),last_name) and" +
+                   " birthday ilike coalesce(concat('%',:b,'%'),birthday) and" +
+                   " email ilike coalesce(concat('%',:e,'%'),email) and deleted_at is null",
+           nativeQuery = true
+    )
+    Page<User> searchByBasic(
+            @Param(value = "id") Integer id,
+            @Param(value = "f") String firstName,
+            @Param(value = "l") String lastName,
+            @Param(value = "b") String birthday,
+            @Param(value = "e") String email,
+            Pageable pageable);
 }

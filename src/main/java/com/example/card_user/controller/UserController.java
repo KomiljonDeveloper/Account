@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "user")
@@ -57,4 +58,13 @@ public class UserController implements CrUDSimple<UserDto,Integer> {
 
 
     }
+
+    @GetMapping("/search-by-basic")
+    public ResponseDto<Page<UserDto>> searchByBasic(@RequestParam Map<String,String> params){
+      return   this.userService.searchByBasic(params);
+
+
+    }
+
+
 }

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -216,5 +217,37 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
                 .message("OK")
                 .date(list)
                 .build();
+    }
+
+    public ResponseDto<Page<UserDto>> searchByBasic(Map<String, String> params) {
+         int page = 0,size = 10;
+         if (params.containsKey("page")){
+             page = Integer.parseInt(params.get("page"));
+         }
+         if (params.containsKey("size")){
+             size = Integer.parseInt(params.get("size"));
+         }
+
+        Page<UserDto> map = this.userRepository.searchByBasic(
+                params.get("id") == null ? null : Integer.parseInt(params.get("id")),
+                params.get("firstname"),
+                params.get("lastname"),
+                params.get("birthday"),
+                params.get("email"),
+                PageRequest.of(page, size)
+        ).map(this.userMapper::toDto);
+
+
+         if (!map.isEmpty())
+        return ResponseDto.<Page<UserDto>>builder()
+              .message("OK")
+              .success(true)
+              .date(map)
+              .build();
+         else
+             return ResponseDto.<Page<UserDto>>builder()
+                     .message("Users not found!")
+                     .code(-1)
+                     .build();
     }
 }

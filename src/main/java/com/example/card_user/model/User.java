@@ -19,7 +19,9 @@ import java.util.List;
         }
 )
 @NamedQueries(value = {
-        @NamedQuery(name = "existsByEmail",query = "select case when count(u) > 0 then true else false end from User as u where u.email like :email and u.deletedAt is null"),
+        @NamedQuery(name = "existsByEmail",
+                query = "select case when count(u) > 0 " +
+                        "then true else false end from User as u where u.email like :email and u.deletedAt is null"),
 })
 
 @AllArgsConstructor
