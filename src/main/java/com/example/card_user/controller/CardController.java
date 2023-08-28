@@ -49,4 +49,9 @@ public class CardController implements CrUDSimple<CardDto,Integer> {
         return this.cardService.searchByBasic(params);
     }
 
+    @GetMapping("/search-by-advanced")
+    public ResponseDto<Page<CardDto>> searchByAdvanced(@RequestParam Map<String,String> params){
+        return this.cardService.searchByAdvanced(params);
+    }
+
 }

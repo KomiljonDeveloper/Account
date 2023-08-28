@@ -11,6 +11,7 @@ import com.example.card_user.service.mapper.CardMapper;
 import com.example.card_user.model.Card;
 import com.example.card_user.model.CrUDSimple;
 import com.example.card_user.service.validation.CardValidation;
+import com.example.card_user.utils.CardRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,7 @@ public class CardService implements CrUDSimple<CardDto, Integer> {
     private final UserRepository userRepository;
     private final CardMapper cardMapper;
     private final CardValidation cardValidation;
+    private final CardRepositoryImpl cardRepositoryImpl;
 
 
     @Override
@@ -199,5 +201,20 @@ public class CardService implements CrUDSimple<CardDto, Integer> {
         }
 
 
+    }
+
+    public ResponseDto<Page<CardDto>> searchByAdvanced(Map<String, String> params) {
+      return   Optional.of(this.cardRepositoryImpl.searchByAdvanced(params).map(this.cardMapper::toDto)).map(cards ->
+                ResponseDto.<Page<CardDto>>builder()
+                        .success(true)
+                        .message("OK")
+                        .date(cards)
+                        .build()
+                ).orElse(
+                ResponseDto.<Page<CardDto>>builder()
+                        .code(-1)
+                        .message("Card is not found!")
+                        .build()
+        );
     }
 }
