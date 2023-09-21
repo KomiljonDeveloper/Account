@@ -67,6 +67,7 @@ public class UserController implements CrUDSimple<UserDto,Integer> {
     @GetMapping("/search-by-advanced")
     public ResponseDto<Page<UserDto>> searchByAdvanced(@RequestParam Map<String,String> params){
         return  this.userService.searchByAdvanced(params);
+
     }
 
 

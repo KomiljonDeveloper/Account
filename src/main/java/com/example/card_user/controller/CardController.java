@@ -6,11 +6,14 @@ import com.example.card_user.dto.UserDto;
 import com.example.card_user.model.CrUDSimple;
 import com.example.card_user.service.CardService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.invoke.MethodType;
 import java.util.Map;
 
 @RestController
@@ -21,6 +24,12 @@ public class CardController implements CrUDSimple<CardDto,Integer> {
     private CardService cardService;
 
     @Override
+    @Operation(
+            tags = {"Salom","Helllo"},
+            method = "Post",
+            summary = "This method is entries users information!",
+            description = "This is method description!"
+    )
     @PostMapping("/create")
     public ResponseDto<CardDto> create(@RequestBody @Valid CardDto dto) {
         return this.cardService.create(dto);
