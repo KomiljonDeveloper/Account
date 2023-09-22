@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@NamedQuery(
+        name = "deleting image",
+        query = "select i from Image as i where deletedAt is not null"
+)
 public class Image {
     @Id
     @SequenceGenerator(name = "file_seq",sequenceName = "file_sequence",allocationSize = 1)

@@ -60,4 +60,6 @@ public interface UserRepository extends JpaRepository<User,Integer>
             @Param(value = "b") String birthday,
             @Param(value = "e") String email,
             Pageable pageable);
+
+    List<User> findAllByDeletedAtIsNotNull();
 }

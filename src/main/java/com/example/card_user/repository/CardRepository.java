@@ -43,4 +43,7 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
             @Param(value = "number") String number,
             @Param(value = "name") String name,
             Pageable pageable);
+
+
+    List<Card> findAllByDeletedAtIsNotNull();
 }
