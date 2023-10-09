@@ -15,7 +15,7 @@ import java.util.List;
 public class CardScheduledConfiguration {
    private final CardRepository cardRepository;
     @Scheduled(
-            cron = "10 * * * * *"
+            cron = "0 0 0 1 * *"
     )
     private void clearDeletingCard(){
         List<Card> allByDeletedAtIsNotNull =

@@ -147,7 +147,7 @@ public class CardService implements CrUDSimple<CardDto, Integer> {
             return this.cardRepository.findByCardIdAndDeletedAtIsNull(id).map(card ->
                     ResponseDto.<CardDto>builder()
                             .success(true)
-                            .message("Deleted User!!!")
+                            .message("Ok")
                             .date(cardMapper.toDto(card))
                             .build()
             ).orElse(ResponseDto.<CardDto>builder()

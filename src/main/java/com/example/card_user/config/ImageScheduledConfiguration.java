@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageScheduledConfiguration {
     private final ImageRepository imageRepository;
-    @Scheduled(cron = "10 * * * * *")
+    @Scheduled(cron = "0 0 0 1 * *")
     private void clearDeletingImage(){
         List<Image> images =
                 this.imageRepository.deletingImage();

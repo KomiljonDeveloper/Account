@@ -1,5 +1,6 @@
 package com.example.card_user.service;
 
+import ch.qos.logback.core.sift.AppenderFactoryUsingSiftModel;
 import com.example.card_user.dto.ErrorDto;
 import com.example.card_user.dto.ImageDto;
 import com.example.card_user.dto.ResponseDto;
@@ -40,8 +41,8 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
 
     @Override
     public ResponseDto<UserDto> create(UserDto dto) {
-        dto.setCreatedAt(LocalDateTime.now());
-
+        User entity = this.userMapper.toEntity(dto);
+        entity.setCreatedAt(LocalDateTime.now());
         List<ErrorDto> errors = userValidation.validation(dto);
         if (!errors.isEmpty()) {
             return ResponseDto.<UserDto>builder()
@@ -51,41 +52,45 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
                     .build();
         }
 
-        if (this.userRepository.existsByEmailAndDeletedAtIsNull(dto.getEmail())) {
+        if (this.userRepository.existsByEmailAndDeletedAtIsNull(entity.getEmail())) {
             return ResponseDto.<UserDto>builder()
                     .code(-3)
                     .message("This email already exists!")
                     .build();
         }
-        userRepository.save(userMapper.toEntity(dto));
+
+        userRepository.save(entity);
         return ResponseDto.<UserDto>builder()
                 .success(true)
                 .message("Ok")
-                .date(dto)
+                .date(this.userMapper.toDto(entity))
                 .build();
     }
 
     @Override
     public ResponseDto<UserDto> delete(Integer id) {
-        try {
+
             return this.userRepository.findByUserId(id).map(user1 -> {
                 user1.setDeletedAt(LocalDateTime.now());
+                try {
                 this.userRepository.save(user1);
                 return ResponseDto.<UserDto>builder()
                         .success(true)
                         .message("Deleted User!!!")
                         .build();
+                } catch (Exception e) {
+                    return ResponseDto.<UserDto>builder()
+                            .code(-2)
+                            .message(String.format("Error text : %s", e.getMessage()))
+                            .build();
+                }
+
             }).orElse(ResponseDto.<UserDto>builder()
                     .message("User not found!")
                     .code(-1)
                     .build());
 
-        } catch (Exception e) {
-            return ResponseDto.<UserDto>builder()
-                    .code(-2)
-                    .message(String.format("Error text : %s", e.getMessage()))
-                    .build();
-        }
+
 
 
     }
@@ -132,14 +137,22 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
 
     @Override
     public ResponseDto<UserDto> get(Integer id) {
-        try {
+
             return this.userRepository.findByUserId(id).map(user1 -> {
                 Optional<Image> optional = this.imageRepository.findByUserIdAndDeletedAtIsNull(user1.getId());
 
-                try {
+
                     if (optional.isPresent()) {
                         ImageDto dto1 = this.imageMapper.toDto(optional.get());
-                        dto1.setData(Files.readAllBytes(Path.of(dto1.getPath())));
+                        try {
+                            dto1.setData(Files.readAllBytes(Path.of(dto1.getPath())));
+                        }catch (Exception e) {
+                            return ResponseDto.<UserDto>builder()
+                                    .code(-2)
+                                    .message(String.format("Error text : %s", e.getMessage()))
+                                    .build();
+
+                        }
                         UserDto dto = this.userMapper.toDto(user1);
                         dto.setImage(dto1);
                         dto.setCards(cardService.cardListFromDto(user1.getId()));
@@ -154,23 +167,16 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
                                 .code(-1)
                                 .build();
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
 
             }).orElse(ResponseDto.<UserDto>builder()
                     .message("User not found!")
                     .code(-1)
                     .build());
 
-        } catch (Exception e) {
-            return ResponseDto.<UserDto>builder()
-                    .code(-2)
-                    .message(String.format("Error text : %s", e.getMessage()))
-                    .build();
         }
 
-    }
+
 
     public ResponseDto<Page<UserDto>> getAllByPage(Integer page, Integer size) {
         Page<User> userPage = this.userRepository.findAllByDeletedAtIsNull(PageRequest.of(page, size));
@@ -266,5 +272,5 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
                         .code(-1)
                         .message("User is not found!")
                         .build());
-    }
-}
+    }}
+

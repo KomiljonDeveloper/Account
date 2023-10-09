@@ -29,6 +29,6 @@ public abstract class CardMapper {
     @Mapping(target = "deletedAt",ignore = true)
     @Mapping(target = "user",ignore = true)
     public abstract CardDto toDtoNotUser(Card card);
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract void update(@MappingTarget Card card, CardDto dto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,resultType = Card.class )
+    public abstract Card update(@MappingTarget Card card, CardDto dto);
 }

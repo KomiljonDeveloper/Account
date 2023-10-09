@@ -1,10 +1,7 @@
 package com.example.card_user.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 @AllArgsConstructor
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
 @NamedQuery(
         name = "deleting image",
         query = "select i from Image as i where deletedAt is not null"

@@ -25,7 +25,7 @@ public class UserScheduledConfiguration {
 //        System.out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()));
 //    }
 
-    @Scheduled(cron = "10 * * * * *")
+    @Scheduled(cron = "0 0 0 1 * *")
     private void clearDeletingInformation(){
         List<User> list = userRepository.findAllByDeletedAtIsNotNull();
         this.userRepository.deleteAll(list);
