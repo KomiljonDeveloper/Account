@@ -39,7 +39,7 @@ public interface UserRepository extends JpaRepository<User,Integer>
     @Query(
             name = "existsByEmail"
      )
-    boolean existsByEmailAndDeletedAtIsNull(String email);
+    boolean existsByEmail(String email);
 
     Page<User> findAllByDeletedAtIsNull(Pageable pageable);
     Optional<User> findByEmailAndDeletedAtIsNull(String email);

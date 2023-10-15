@@ -14,6 +14,7 @@ public abstract class UserMapper {
     protected PasswordEncoder passwordEncoder;
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "password",expression = "java(passwordEncoder.encode(dto.getPassword()))")
+    @Mapping(target = "enabled",expression = "java(true)")
      public abstract User toEntity(UserDto dto);
     @Mapping(target = "createdAt",ignore = true)
     @Mapping(target = "updatedAt",ignore = true)

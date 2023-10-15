@@ -1,6 +1,5 @@
 package com.example.card_user.service;
 
-import ch.qos.logback.core.sift.AppenderFactoryUsingSiftModel;
 import com.example.card_user.dto.ErrorDto;
 import com.example.card_user.dto.ImageDto;
 import com.example.card_user.dto.ResponseDto;
@@ -17,10 +16,8 @@ import com.example.card_user.utils.UserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -53,7 +50,7 @@ public class UserService implements CrUDSimple<UserDto, Integer> {
                     .build();
         }
 
-        if (this.userRepository.existsByEmailAndDeletedAtIsNull(entity.getEmail())) {
+        if (this.userRepository.existsByEmail(entity.getEmail())) {
             return ResponseDto.<UserDto>builder()
                     .code(-3)
                     .message("This email already exists!")

@@ -28,6 +28,7 @@ public class UserDto {
     private String birthday;
     private List<CardDto> cards;
     private ImageDto image;
+    private String username;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
     private LocalDateTime updatedAt;
