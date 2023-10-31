@@ -1,6 +1,7 @@
 package com.example.card_user.config;
 
 
+import com.example.card_user.security.SecurityFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -17,17 +19,20 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    protected final PasswordEncoder passwordEncoder;
-    private final DataSource dataSource;
-    @Autowired
-    public void authenticationManagerBuilder(AuthenticationManagerBuilder builder) throws Exception {
-         builder.jdbcAuthentication()
-                 //.usersByUsernameQuery("select username auth as users where username = ?")
-                 .dataSource(dataSource)
-                 .passwordEncoder(passwordEncoder);
-    }
+      private final SecurityFilter securityFilter;
 
+
+//    protected final PasswordEncoder passwordEncoder;
+//    private final DataSource dataSource;
 //    @Autowired
+//    public void authenticationManagerBuilder(AuthenticationManagerBuilder builder) throws Exception {
+//         builder.jdbcAuthentication()
+//                 //.usersByUsernameQuery("select username auth as users where username = ?")
+//                 .dataSource(dataSource)
+//                 .passwordEncoder(passwordEncoder);
+//    }
+//
+////    @Autowired
 //    public void authenticationManagerBuilder(AuthenticationManagerBuilder builder) throws Exception {
 //        builder.inMemoryAuthentication()
 //                .withUser("Johnny")
@@ -44,9 +49,9 @@ public class SecurityConfig {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin()
-                .and().build();
+                .and().addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }

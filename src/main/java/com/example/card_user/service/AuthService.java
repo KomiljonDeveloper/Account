@@ -5,13 +5,16 @@ import com.example.card_user.dto.ResponseDto;
 import com.example.card_user.repository.AuthRepository;
 import com.example.card_user.service.mapper.AuthMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService implements UserDetailsService {
 
     private final AuthMapper authMapper;
     private final AuthRepository authRepository;
@@ -49,5 +52,12 @@ public class AuthService {
                 .code(-1)
                 .build());
 
+    }
+
+    @Override
+    public AuthDto loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.authRepository.findByUsernameAndEnableIsTrueAndDeletedAtIsNull(username)
+                .map(this.authMapper::toDtoWithAuth)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("This %s username is not found!",username)));
     }
 }

@@ -33,6 +33,18 @@ public class AuthMapper {
                 .username(entity.getUsername())
                 .build();
     }
+public AuthDto toDtoWithAuth(Auth entity) {
+        return AuthDto.builder()
+                .authId(entity.getAuthId())
+                .authorities(entity.getAuthorities())
+                .createdAt(entity.getCreatedAt())
+                .deletedAt(entity.getDeletedAt())
+                .updatedAt(entity.getUpdatedAt())
+                .enable(entity.getEnable())
+                .password(entity.getPassword())
+                .username(entity.getUsername())
+                .build();
+    }
 
 
 }

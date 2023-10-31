@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface AuthRepository extends JpaRepository<Auth,Integer> {
+    Optional<Auth> findByUsernameAndEnableIsTrueAndDeletedAtIsNull(String username);
     Optional<Auth> findByAuthIdAndDeletedAtIsNull(Integer id);
 }

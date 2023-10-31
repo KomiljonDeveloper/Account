@@ -15,4 +15,12 @@ public class Authorities {
     private String username;
     private String authority;
     private Integer userId;
+
+    @ManyToOne
+    @JoinTable(
+            name = "auth_authorities",
+            joinColumns = @JoinColumn(name = "authorities_id"),
+            inverseJoinColumns = @JoinColumn(name = "auth_id")
+    )
+    private Auth auth;
 }

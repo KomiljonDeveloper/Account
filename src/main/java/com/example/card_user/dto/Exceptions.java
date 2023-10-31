@@ -1,6 +1,8 @@
 package com.example.card_user.dto;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +26,12 @@ public class Exceptions {
                         }).toList())
                 .build());
     }
-
+    @ExceptionHandler
+    public ResponseEntity<ResponseDto<Void>> usernameNotFoundException(UsernameNotFoundException e){
+        return  new ResponseEntity<>(ResponseDto.<Void>builder()
+                .message("Rejection value : "+e.getMessage())
+                .code(-1)
+                .build(), HttpStatus.NOT_FOUND);
+    }
 
 }

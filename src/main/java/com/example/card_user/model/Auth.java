@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,6 +20,12 @@ public class Auth {
     private String username;
     private String password;
     private Boolean enable;
+
+    @OneToMany(
+            mappedBy = "auth"
+    )
+    private Set<Authorities> authorities;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
