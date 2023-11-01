@@ -17,9 +17,12 @@ public class Auth {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer authId;
+    private String first_name;
+    private String last_name;
     private String username;
     private String password;
     private Boolean enable;
+    private String code;
 
     @OneToMany(
             mappedBy = "auth"

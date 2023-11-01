@@ -1,6 +1,7 @@
 package com.example.card_user.config;
 
 
+import com.example.card_user.security.JwtSecurityFilter;
 import com.example.card_user.security.SecurityFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-      private final SecurityFilter securityFilter;
-
+    //  private final SecurityFilter securityFilter;
+  private final JwtSecurityFilter filter;
 
 //    protected final PasswordEncoder passwordEncoder;
 //    private final DataSource dataSource;
@@ -51,7 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
-                .and().addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .and().addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

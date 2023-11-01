@@ -15,10 +15,12 @@ public class AuthMapper {
         return Auth.builder()
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .username(dto.getUsername())
+                .first_name(dto.getFirst_name())
+                .last_name(dto.getLast_name())
                 .createdAt(dto.getCreatedAt())
                 .deletedAt(dto.getDeletedAt())
                 .updatedAt(dto.getUpdatedAt())
-                .enable(true)
+                .code("0000")
                 .build();
     }
 

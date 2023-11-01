@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface AuthRepository extends JpaRepository<Auth,Integer> {
     Optional<Auth> findByUsernameAndEnableIsTrueAndDeletedAtIsNull(String username);
     Optional<Auth> findByAuthIdAndDeletedAtIsNull(Integer id);
+
+    Optional<Auth> findByUsernameAndDeletedAtIsNull(String username);
 }
